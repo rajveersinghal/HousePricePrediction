@@ -7,8 +7,8 @@ app= Flask(__name__)
 
 
 
-data = pd.read_csv('datasets/Cleaned_Data.csv')
-pipe=pickle.load(open('model/RidgeModel.pkl','rb'))
+data = pd.read_csv("C:\\Users\\avipa\\OneDrive\\Desktop\\Live project 1\\HousePricePrediction\\datasets\\Cleaned_Data.csv")
+pipe = pickle.load(open("C:\\Users\\avipa\\OneDrive\\Desktop\\Live project 1\\HousePricePrediction\\model\\RidgeModel.pkl", 'rb'))
 
 @app.route('/')
 def index():
@@ -37,9 +37,12 @@ def predict():
     input_data = pd.DataFrame([[location, sqft, bath, bhk]], 
                               columns=['location', 'total_sqft', 'bath', 'bhk'])
     predicted_price = pipe.predict(input_data)[0] * 1e5
+    if predicted_price >= 1e7:
+        price_str = f" {predicted_price/1e7:.2f} Cr"
+    else:
+        price_str = f" {predicted_price/1e5:.2f} Lakh"
 
-    # Return the predicted price as a response
-    return f"The predicted price of the house is: ₹{predicted_price:.2f}"
+    return price_str
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
