@@ -11,8 +11,8 @@
             margin: 0;
             padding: 0;
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1494526585095-c41746248156?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGluZGlhbiUyMGhvdXNlfGVufDB8fDB8fHww');
-            /* Add your building image URL here */
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1494526585095-c41746248156?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGluZGlhbiUyMGhvdXNlfGVufDB8fDB8fHww');
             background-blend-mode: darken;
             background-size: cover;
             background-position: center;
@@ -21,11 +21,11 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            flex-direction: row;
         }
 
         .container {
             background: rgba(255, 255, 255, 0.214);
-            /* Decreased opacity */
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
@@ -33,7 +33,6 @@
             max-width: 600px;
             margin: 20px;
             backdrop-filter: blur(5px);
-            /* Adds a blur effect to the background */
         }
 
         .header {
@@ -69,7 +68,7 @@
             transform: scale(0.98);
         }
 
-        .form-control {
+        .form-control, .form-select {
             border-radius: 10px;
             padding: 12px;
             border: 1px solid #ced4da;
@@ -79,7 +78,7 @@
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             border-color: #28a745;
             box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
         }
@@ -101,13 +100,8 @@
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .predicted-price {
@@ -125,52 +119,38 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-.predicted-price.show {
-    opacity: 1;
-    transform: translateY(0);
-}
+        .predicted-price.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-.predicted-price h1 {
-    font-size: 48px;
-    font-weight: 700;
-    margin: 0;
-    text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
-    letter-spacing: 1px;
-    animation: pulse 2s infinite;
-}
+        .predicted-price h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
 
-@keyframes pulse {
-    0% { text-shadow: 0 0 5px rgba(255,255,255,0.4); }
-    50% { text-shadow: 0 0 15px rgba(255,255,255,0.7); }
-    100% { text-shadow: 0 0 5px rgba(255,255,255,0.4); }
-}
-
+        @keyframes pulse {
+            0% { text-shadow: 0 0 5px rgba(255,255,255,0.4); }
+            50% { text-shadow: 0 0 15px rgba(255,255,255,0.7); }
+            100% { text-shadow: 0 0 5px rgba(255,255,255,0.4); }
+        }
 
         .form-label {
             font-weight: bold;
             color: #ffffff;
             display: block;
             margin-bottom: 5px;
-        }
-
-        .form-select {
-            border-radius: 10px;
-            padding: 12px;
-            border: 1px solid #ced4da;
-            width: 100%;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-select:focus {
-            border-color: #28a745;
-            box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+            margin-top: 20px;
         }
 
         .row {
             display: flex;
             gap: 20px;
-            margin-top: 20px;
+            margin-top: 10px;
             margin-bottom: 20px;
         }
 
@@ -182,39 +162,43 @@
 
 <body>
     <div class="container">
-        <div class="header">Bangalore House Price Predictor</div>
+        <div class="header">House Price Predictor</div>
         
         <form id="predictionForm" method="post" accept-charset="utf-8">
+            <!-- City Selection -->
+            <div class="mb-3">
+                <label class="form-label">Select the City:</label>
+                <select class="form-select" id="city" name="city" required>
+                    {% for city in cities %}
+                    <option value="{{ city }}">{{ city }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Location Selection -->
             <div class="mb-3">
                 <label class="form-label">Select the Location:</label>
                 <select class="form-select" id="location" name="location" required>
-                    {% if locations %}
-                    {% for location in locations %}
-                    <option value="{{ location }}">{{ location }}</option>
-                    {% endfor %}
-                    {% else %}
-                    <option value="">No locations available</option>
-                    {% endif %}
+                    <!-- Filled dynamically by JS -->
                 </select>
             </div>
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Enter BHK:</label>
-                    <input type="number" class="form-control" placeholder="Enter BHK" id="bhk" name="bhk" required
-                        min="1">
+                    <input type="number" class="form-control" placeholder="Enter BHK" id="bhk" name="bhk" required min="1">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Enter Number of Bathrooms:</label>
-                    <input type="number" class="form-control" placeholder="Enter Number of Bathrooms" id="bath"
-                        name="bath" required min="1">
-                    
+                    <input type="number" class="form-control" placeholder="Enter Number of Bathrooms" id="bath" name="bath" required min="1">
                 </div>
             </div>
+
             <div class="mb-3">
                 <label class="form-label">Enter Total Square Feet:</label>
-                <input type="number" class="form-control" placeholder="Enter Square Feet" id="sqft" name="sqft" required
-                    min="1">
+                <input type="number" class="form-control" placeholder="Enter Square Feet" id="sqft" name="sqft" required min="1">
             </div>
+
             <button type="submit" class="btn btn-custom">Predict Price</button>
         </form>
     </div>
@@ -226,18 +210,41 @@
             <p>Predicting...</p>
         </div>
         <div class="predicted-price" id="predictedPriceContainer">
-            <!-- <p class="text-center">The predicted price of the house is:</p> -->
             <h1 class="text-center" id="predicted_price">₹ 0</h1>
         </div>
     </div>
 
     <script>
+        // locations data passed from Flask
+        var locations = {{ locations|tojson }};
+
+        // populate locations based on city
+        function updateLocations() {
+            var city = document.getElementById("city").value;
+            var locationSelect = document.getElementById("location");
+            locationSelect.innerHTML = "";
+
+            if (locations[city]) {
+                locations[city].forEach(function(loc) {
+                    var option = document.createElement("option");
+                    option.value = loc;
+                    option.text = loc;
+                    locationSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Initial population when page loads
+        document.addEventListener("DOMContentLoaded", updateLocations);
+        // Update when city changes
+        document.getElementById("city").addEventListener("change", updateLocations);
+
+        // Prediction AJAX
         document.getElementById('predictionForm').addEventListener('submit', function (event) {
             event.preventDefault();
             var form = event.target;
             var formData = new FormData(form);
 
-            // Show loading indicator
             document.getElementById('loadingIndicator').style.display = 'block';
             document.getElementById('predictedPriceContainer').classList.remove('show');
 
@@ -245,9 +252,7 @@
             xhr.open('POST', '/predict', true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
-                    // Hide loading indicator
                     document.getElementById('loadingIndicator').style.display = 'none';
-
                     if (xhr.status === 200) {
                         document.getElementById('predicted_price').innerHTML = "₹ " + xhr.responseText;
                         document.getElementById('predictedPriceContainer').classList.add('show');
