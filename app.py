@@ -7,14 +7,14 @@ app = Flask(__name__)
 # ------------------------
 # Load Bengaluru dataset + model
 # ------------------------
-blr_data = pd.read_csv("C:\\Users\\avipa\\OneDrive\\Desktop\\Live project 1\\HousePricePrediction\\datasets\\Cleaned_Data.csv")
-blr_model = pickle.load(open("C:\\Users\\avipa\\OneDrive\\Desktop\\Live project 1\\HousePricePrediction\\model\\RidgeModel.pkl", 'rb'))
+blr_data = pd.read_csv('datasets/Cleaned_Data.csv')
+blr_model = pickle.load(open('model/RidgeModel.pkl','rb'))
 
 # ------------------------
 # Load Delhi dataset + model
 # ------------------------
-delhi_data = pd.read_csv("C:\\Users\\avipa\\OneDrive\\Desktop\\Live project 1\\HousePricePrediction\\datasets\\newdataset.csv")
-delhi_model = pickle.load(open("C:\\Users\\avipa\\OneDrive\\Desktop\\Live project 1\\HousePricePrediction\\model\\RidgeModel_d.pkl", 'rb'))
+delhi_data = pd.read_csv('datasets/newdataset.csv')
+delhi_model = pickle.load(open('model/RidgeModel_d.pkl','rb'))
 
 # ------------------------
 # Home route
@@ -74,3 +74,4 @@ def predict():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
